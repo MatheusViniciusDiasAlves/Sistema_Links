@@ -33,15 +33,50 @@ app.get("/sites", (req, res) => {
 
 app.post("/sites", (req, res) =>{
 //app.post() Cria uma rota para cadastrar dados.
+
+    
+//req.body.nome Lê o nome enviado pelo cliente.
+
+    try{
+        const url = new URL(req.body.url);
+        
+        if (url.protocol !== "https:"){
+            return res.status(400).json({
+                erro: "Somente URLs HTTPS são permitidas."
+            })           
+        }
+
+
+    }catch(erro){
+
+        return res.status(400).json({
+            erro: "URL inválida"
+
+        })
+    }
+        
+
+    const nome = req.body.nome;
+
+    if(!nome.trim()){
+        return res.status(400).json({
+            erro: "O nome é obrigatório"
+        });  
+    } 
+
+// Aqui fizemos uma validação para ver se o código é realmente confiavel, pois tem pessoas que colocam por exemplo um nome vaziu ou não valído, nisso a gente fez que se meu nome está vazio, ausente ou valor considerado falso | também se meu nome está com espaço em branco iremos retornar o status de erro 400 falando que o nome é obrigatório
+
+    sites.push(novoSite);
+
+    res.status(201).json(novoSite)
+
+
     const novoSite = {
         id: sites.length + 1,
         nome: req.body.nome,
         url: req.body.url
     };
-//req.body.nome Lê o nome enviado pelo cliente.
-    sites.push(novoSite);
 
-    res.status(201).json(novoSite)
 //res.status(201) Informa que o recurso foi criado.
 //res.json() Devolve o site cadastrado.
 });
